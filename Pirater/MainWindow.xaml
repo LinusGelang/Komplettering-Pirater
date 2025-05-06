@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Label x:Name="label" Content="Namn:" HorizontalAlignment="Left" Margin="30,54,0,0" VerticalAlignment="Top" Height="30"/>
+        
+        <TextBox x:Name="txtPirateName" HorizontalAlignment="Left" Margin="75,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        
+        <Button x:Name="btnCreatePirate" Content="Skapa Pirat" HorizontalAlignment="Left" Margin="75,84,0,0" VerticalAlignment="Top" Width="120" Click="btnCreatePirate_Click"/>
 
     </Grid>
 </Window>
