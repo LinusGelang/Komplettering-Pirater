@@ -12,8 +12,8 @@ namespace Pirater.Tabeller
 
         public string Name { get; set; }
 
-        public string RankId { get; set; }
+        public int RankId { get; set; }
 
-        public string ShipId { get; set; }
+        public int ShipId { get; set; }
     }
 }
