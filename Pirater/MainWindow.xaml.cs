@@ -31,6 +31,12 @@ namespace Pirater
         {
             List<Rank> ranks = await _dbRepo.GetAllRanks();
             ComboBoxPirateRank<Rank>(cboxRanks, ranks);
+
+            List<Pirate> pirates = await _dbRepo.GetAllPirates();
+            ListPirates<Pirate>(lstboxPirate, pirates);
+
+            List<Ship> ships = await _dbRepo.GetAllShips();
+            ListShips<Ship>(lstboxShip, ships);
         }
 
         private async void ComboBoxPirateRank<T>(ComboBox cb, List<T> list)
@@ -71,8 +77,18 @@ namespace Pirater
             }
         }
 
-        
+        private async void ListPirates<T>(ListBox lbp, List<T> list) // Visar piraterna i listbox
+        {
+            lbp.ItemsSource = list;
+            lbp.DisplayMemberPath = "Name";
+            lbp.SelectedValuePath = "Id";
+        }
 
-
+        private async void ListShips<T>(ListBox lbs, List<T> list) // Visar skeppen i listbox
+        {
+            lbs.ItemsSource = list;
+            lbs.DisplayMemberPath = "Name";
+            lbs.SelectedValuePath = "Id";
+        }
     }
 }

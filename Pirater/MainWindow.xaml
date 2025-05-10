@@ -12,12 +12,13 @@
         <Button x:Name="btnCreatePirate" Content="Skapa Pirat" HorizontalAlignment="Left" Margin="75,84,0,0" VerticalAlignment="Top" Width="120" Click="btnCreatePirate_Click"/>
         <ComboBox x:Name="cboxRanks" HorizontalAlignment="Left" Margin="219,58,0,0" VerticalAlignment="Top" Width="120"/>
         
+        <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,167,451,116"/>
+        <Button x:Name="btnRecruitPirate" Content="Bemanna Skepp" HorizontalAlignment="Center" Margin="0,213,0,0" VerticalAlignment="Top" Width="92" Click="btnCreatePirate_Click" Height="49"/>
+        
         <Button x:Name="btnSearchPirate" Content="Sök Pirat/Papegoja" HorizontalAlignment="Left" Margin="75,131,0,0" VerticalAlignment="Top" Width="120" Click="btnCreatePirate_Click"/>
         <Button x:Name="btnSearchShip" Content="Sök Skepp" HorizontalAlignment="Left" Margin="572,84,0,0" VerticalAlignment="Top" Width="120" Click="btnCreatePirate_Click"/>
-        <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,167,451,116"/>
         <ListBox x:Name="lstboxShip" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="451,167,10,116"/>
         <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="572,342,0,0" VerticalAlignment="Top" Width="120" Click="btnCreatePirate_Click"/>
-        <Button x:Name="btnRecruitPirate" Content="Bemanna Skepp" HorizontalAlignment="Center" Margin="0,213,0,0" VerticalAlignment="Top" Width="92" Click="btnCreatePirate_Click" Height="49"/>
         <Label x:Name="labelShip" Content="Namn:" HorizontalAlignment="Left" Margin="527,48,0,0" VerticalAlignment="Top" Height="30"/>
         <TextBox x:Name="txtShipeName" HorizontalAlignment="Left" Margin="572,54,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 

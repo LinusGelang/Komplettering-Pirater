@@ -29,7 +29,7 @@ namespace Pirater.Repositories
             using var conn = new NpgsqlConnection(_connectionString);
             await conn.OpenAsync();
 
-            // Skapa SQL - kommando för att hämta ranker från databasen
+            // Hämta ranker från databasen
             using var command = new NpgsqlCommand("SELECT id, name FROM rank", conn);
 
             // Kör kommandot och läser resultatet
@@ -73,6 +73,59 @@ namespace Pirater.Repositories
                 // Felmeddelande
                 MessageBox.Show($"Något blev fel: {ex.Message}");
             }
+        }
+
+        public async Task<List<Pirate>> GetAllPirates() // Metod för att hämta befintliga pirater
+        {
+            //Lista för att lagra alla pirater från databsen
+            List<Pirate> pirates = new List<Pirate>();
+
+            using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            // Hämta pirate från databasen
+            using var command = new NpgsqlCommand("SELECT id, name FROM pirate", conn);
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Pirate pirate = new Pirate()
+                    {
+                        Id = (int)reader["id"],
+                        Name = (string)reader["name"].ToString()
+                    };
+                    pirates.Add(pirate);
+                }
+            }
+            return pirates;
+        }
+        
+        public async Task<List<Ship>> GetAllShips() // Metod för att hämta befintliga skepp
+        {
+            //Lista för att lagra alla skepp från databsen
+            List<Ship> ships = new List<Ship>();
+
+            using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            // Hämta skepp från databasen
+            using var command = new NpgsqlCommand("SELECT id, name, ship_type_id FROM ship", conn);
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Ship ship = new Ship()
+                    {
+                        Id = (int)reader["id"],
+                        Name = (string)reader["name"].ToString(),
+                        ShipTypeId = (int)reader["ship_type_Id"]
+                    };
+                    ships.Add(ship);
+                }
+            }
+            return ships;
         }
     }
 }
