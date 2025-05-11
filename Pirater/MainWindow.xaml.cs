@@ -92,7 +92,7 @@ namespace Pirater
             cbs.SelectedValuePath = "Id";
         }
 
-        private void btnRecruitPirate_Click(object sender, RoutedEventArgs e) // Knapp för att bemanna skepp
+        private async void btnRecruitPirate_Click(object sender, RoutedEventArgs e) // Knapp för att bemanna skepp
         {
             // Hämta den valda piraten
             var selectedPirate = (Pirate)lstboxPirate.SelectedItem;
@@ -115,6 +115,13 @@ namespace Pirater
                 return;
             }
             
+            bool success = await _dbRepo.RecruitPirate(selectedPirate.Id, selectedShip.Id);
+
+            if (success)  //Hittade denna if (success) här https://stackoverflow.com/questions/32569860/checking-if-httpstatuscode-represents-success-or-failure/34772513
+            {
+                MessageBox.Show($"Piraten {selectedPirate.Name} har rekryterats till {selectedShip.Name}!");
+            }
+           
         }
 
 
