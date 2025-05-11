@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Pirater.Repositories
 {
@@ -128,5 +129,103 @@ namespace Pirater.Repositories
             }
             return ships;
         }
+
+        public async Task<bool> RecruitPirate (int pirateId, int shipId)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                // Hämta skepps typ för att kolla besättning
+                int shipTypeId = 0;
+                using var shipCommand = new NpgsqlCommand("SELECT ship_type_id FROM ship WHERE id = @ship_id", conn);
+                shipCommand.Parameters.AddWithValue("ship_id", shipId);
+
+                int currentCrew = 0;
+                using var crewCommand = new NpgsqlCommand("SELECT id FROM pirate WHERE ship_id = @ship_id", conn);
+                crewCommand.Parameters.AddWithValue("ship_id", shipId);
+
+
+                // Hämtar piratare på skeppet
+                using (var reader = crewCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        currentCrew++; // Öka currentCrew för varje pirat som hittas
+                    }
+                }
+
+                int maxCrew = 0;
+                if (shipTypeId == 1)
+                {
+                    maxCrew = 2;
+                }
+                else if (shipTypeId == 2)
+                {
+                    maxCrew = 3;
+                }
+                else if(shipTypeId == 3)
+                {
+                    maxCrew = 4;
+                }
+                else
+                {
+                    maxCrew = 0;
+                }
+
+                if (currentCrew >= maxCrew)
+                {
+                    MessageBox.Show("Skeppet har inte plats för fler pirater");
+                    return false;
+                }
+
+                using var updateCommand = new NpgsqlCommand("UPDATE pirate SET ship_id = @ship_id WHERE id = @pirate_id", conn);
+                updateCommand.Parameters.AddWithValue("ship_id", shipId); // 
+                updateCommand.Parameters.AddWithValue("pirate_id", pirateId); // 
+
+                var result = await updateCommand.ExecuteNonQueryAsync();
+                MessageBox.Show("Piraten har blivit tilldelad ett skepp");
+                return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Något blev fel: {ex.Message}");
+                    return false;
+                }
+        }
+
+
+
+
+
+        public async Task<Pirate> SearchPirateAsync(string pirateName)
+        {
+            Pirate pirate = null;
+
+            using var connection = new NpgsqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var command = new NpgsqlCommand("SELECT id, name, rank_id, ship_id FROM pirate", connection);
+            command.Parameters.AddWithValue("id", pirateName);
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        pirate = new Pirate
+                        {
+                            Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
+                            Name = reader["name"].ToString(),
+                            RankId = (int)reader["rank_id"],
+                            ShipId = (int)reader["ship_id"],
+                        };
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
     }
 }

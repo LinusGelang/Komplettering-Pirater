@@ -102,7 +102,7 @@ namespace Pirater
                 return;
             }
             // Kolla om piraten redan är kopplad till ett skepp
-            if (selectedPirate.ShipId !=  null)
+            if (selectedPirate.ShipId != null)
             {
                 MessageBox.Show("Piraten är bemannad på ett annat skepp");
                 return;
@@ -114,6 +114,45 @@ namespace Pirater
                 MessageBox.Show("Välj ett skepp");
                 return;
             }
+            
+        }
+
+
+
+        public async void btnSearchPirate_Click(object sender, RoutedEventArgs e)
+        {
+            //try
+            //{
+            //    // Om textboxen inte är tom
+            //    if (txtPirateName.Text.Length > 0)
+            //    {
+            //        string namn = txtPirateName.Text;
+
+            //        // Sök efter piraten med all information
+            //        Pirate foundPirateInfo = await _dbRepo.SearchPirateAsync(namn);
+
+            //        if (foundPirateInfo != null)
+            //        {
+            //            // Visa all information om piraten
+            //            ShowPirateInfo(foundPirateInfo);
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Ingen pirat med det namnet hittades!");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Ange ett namn att söka efter.");
+            //    }
+
+            //    // Rensa sökfältet
+            //    txtPirateName.Clear();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Fel vid sökning: {ex.Message}");
+            //}
         }
     }
 }

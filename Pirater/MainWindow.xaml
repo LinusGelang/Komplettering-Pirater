@@ -16,13 +16,29 @@
         <TextBox x:Name="txtShipName" HorizontalAlignment="Left" Margin="460,62,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnSearchShip" Content="Sök Skepp" HorizontalAlignment="Left" Margin="460,85,0,0" VerticalAlignment="Top" Width="120" />
         <ComboBox x:Name="cboxShips" HorizontalAlignment="Left" Margin="597,60,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnRecruitPirate" Content="Bemanna Skepp" HorizontalAlignment="Left" Margin="527,250,0,0" VerticalAlignment="Top" Width="92" Click="btnRecruitPirate_Click" Height="49"/>
 
-        <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="30,162,540,121"/>
-        <Button x:Name="btnRecruitPirate" Content="Bemanna Skepp" HorizontalAlignment="Left" Margin="308,168,0,0" VerticalAlignment="Top" Width="92" Click="btnRecruitPirate_Click" Height="49"/>
+        <Button x:Name="btnSearchPirate" Content="Sök Pirat/Papegoja" HorizontalAlignment="Left" Margin="283,176,0,0" VerticalAlignment="Top" Width="120" Click="btnSearchPirate_Click" />
 
-        <Button x:Name="btnSearchPirate" Content="Sök Pirat/Papegoja" HorizontalAlignment="Left" Margin="75,131,0,0" VerticalAlignment="Top" Width="120" />
-
-        <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="294,238,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="597,116,0,0" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="219,37,0,0" TextWrapping="Wrap" Text="Ranks" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="602,39,0,0" TextWrapping="Wrap" Text="Skepp" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,168,0,0" TextWrapping="Wrap" Text="Info pirat" VerticalAlignment="Top"/>
+        <StackPanel Margin="279,232,273,93" RenderTransformOrigin="0.5,0.5">
+            <StackPanel.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </StackPanel.RenderTransform>
+            <Label x:Name="lblPirateNameFull" Content="Piratens namn: "/>
+            <Label x:Name="lblShip" Content="Skepp: "/>
+            <Label x:Name="lblPirateCount" Content="Hur många pirater på skepp: "/>
+            <Label x:Name="lblRank" Content="Rank: "/>
+        </StackPanel>
+        <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,189,583,119"/>
 
     </Grid>
 </Window>
