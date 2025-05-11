@@ -51,6 +51,7 @@ namespace Pirater.Repositories
             // Returnerar listan 
             return ranks;
         }
+
         public async Task RegNewPirate(Pirate pirate) // Metod för att skapa pirater
         {
             try
@@ -83,7 +84,7 @@ namespace Pirater.Repositories
             using var conn = new NpgsqlConnection(_connectionString);
             await conn.OpenAsync();
 
-            // Hämta pirate från databasen
+            // Hämta pirater från databasen
             using var command = new NpgsqlCommand("SELECT id, name FROM pirate", conn);
 
             using (var reader = command.ExecuteReader())

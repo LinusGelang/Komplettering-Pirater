@@ -24,10 +24,10 @@ namespace Pirater
         public MainWindow()
         {
             InitializeComponent();
-            FillComboBox();
+            FillBoxes();
         }
        
-        private async void FillComboBox()
+        private async void FillBoxes()
         {
             List<Rank> ranks = await _dbRepo.GetAllRanks();
             ComboBoxPirateRank<Rank>(cboxRanks, ranks);
@@ -36,10 +36,10 @@ namespace Pirater
             ListPirates<Pirate>(lstboxPirate, pirates);
 
             List<Ship> ships = await _dbRepo.GetAllShips();
-            ListShips<Ship>(lstboxShip, ships);
+            ComboBoxShips<Ship>(cboxShips, ships);
         }
 
-        private async void ComboBoxPirateRank<T>(ComboBox cb, List<T> list)
+        private async void ComboBoxPirateRank<T>(ComboBox cb, List<T> list) // Visar rankerna i combobox
         {
             // https://elearn20.miun.se/moodle/mod/kalvidres/view.php?id=1292192 källa på hur vi fyllde comboboxen
             cb.ItemsSource = list;
@@ -47,8 +47,9 @@ namespace Pirater
             cb.DisplayMemberPath = "Name";
             // Osynliga värdet
             cb.SelectedValuePath = "Id";
-        }
-        private async void btnCreatePirate_Click(object sender, RoutedEventArgs e)
+        } 
+        
+        private async void btnCreatePirate_Click(object sender, RoutedEventArgs e) // Knapp för att skapa pirat
         {
             try
             {
@@ -84,11 +85,35 @@ namespace Pirater
             lbp.SelectedValuePath = "Id";
         }
 
-        private async void ListShips<T>(ListBox lbs, List<T> list) // Visar skeppen i listbox
+        private async void ComboBoxShips<T>(ComboBox cbs, List<T> list) // Visar skeppen i Combobox
         {
-            lbs.ItemsSource = list;
-            lbs.DisplayMemberPath = "Name";
-            lbs.SelectedValuePath = "Id";
+            cbs.ItemsSource = list;
+            cbs.DisplayMemberPath = "Name";
+            cbs.SelectedValuePath = "Id";
+        }
+
+        private void btnRecruitPirate_Click(object sender, RoutedEventArgs e) // Knapp för att bemanna skepp
+        {
+            // Hämta den valda piraten
+            var selectedPirate = (Pirate)lstboxPirate.SelectedItem;
+            if (selectedPirate == null)
+            {
+                MessageBox.Show("Välj en pirat");
+                return;
+            }
+            // Kolla om piraten redan är kopplad till ett skepp
+            if (selectedPirate.ShipId !=  null)
+            {
+                MessageBox.Show("Piraten är bemannad på ett annat skepp");
+                return;
+            }
+            // Kolla om ett skepp är valt
+            var selectedShip = (Ship)cboxShips.SelectedItem;
+            if ( selectedShip == null )
+            {
+                MessageBox.Show("Välj ett skepp");
+                return;
+            }
         }
     }
 }
