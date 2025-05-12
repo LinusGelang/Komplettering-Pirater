@@ -132,38 +132,74 @@ namespace Pirater
 
         public async void btnSearchPirate_Click(object sender, RoutedEventArgs e)
         {
-            //try
-            //{
-            //    // Om textboxen inte är tom
-            //    if (txtPirateName.Text.Length > 0)
-            //    {
-            //        string namn = txtPirateName.Text;
+            try
+            {
+                string searchPirateName = txtPirateName.Text;
+                //string searchParrotName = txtPirateName.Text;
+                
+                // Rensar listan vid en ny sökning
+                lstSearchPirates.ItemsSource = null;
 
-            //        // Sök efter piraten med all information
-            //        Pirate foundPirateInfo = await _dbRepo.SearchPirateAsync(namn);
+                // Hämta piraten från databasen
+                var pirate = await _dbRepo.SearchPirateAsync(searchPirateName);
 
-            //        if (foundPirateInfo != null)
-            //        {
-            //            // Visa all information om piraten
-            //            ShowPirateInfo(foundPirateInfo);
-            //        }
-            //        else
-            //        {
-            //            MessageBox.Show("Ingen pirat med det namnet hittades!");
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Ange ett namn att söka efter.");
-            //    }
+                if (pirate != null)
+                {
+                    // Hämta detaljer om piratens skepp och antal besättningsmedlemmar
+                    var pirateDetails = await _dbRepo.GetPirateDetailsByIdAsync(pirate.Id);
+                    int crewCount = await _dbRepo.GetCrewCountByShipIdAsync(pirateDetails.ShipId);
 
-            //    // Rensa sökfältet
-            //    txtPirateName.Clear();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Fel vid sökning: {ex.Message}");
-            //}
+                    // Visa piratens information i labels
+                    lblPirateName.Content = $"Namn: {pirateDetails.Name}";
+                    lblShip.Content = $"Skepp: {pirateDetails.ShipId}";
+                    lblPirateCount.Content = $"Antal pirater på skeppet: {crewCount}";
+                    lblRank.Content = $"Rank: {pirateDetails.RankId}";
+
+                    // Lägg till piraten i listan för visning
+                    List<Pirate> pirateList = new List<Pirate> { pirate };
+                    lstSearchPirates.ItemsSource = pirateList;
+                    lstSearchPirates.DisplayMemberPath = "Name";
+                    lstSearchPirates.SelectedValuePath = "Id";
+                }
+                else
+                {
+                    MessageBox.Show("Ingen pirat med det namnet hittades.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel: {ex.Message}");
+            }
+        }
+
+        private async void lstSearchSkiers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lstSearchPirates.SelectedItem == null)
+                return;
+
+            var selectedPirate = (Pirate)lstSearchPirates.SelectedItem;
+            try
+            {
+                // hämta infon
+                var pirateDetails = await _dbRepo.GetPirateDetailsByIdAsync(selectedPirate.Id);
+
+                if (pirateDetails != null)
+                {
+                    // Visa informationen i labels
+                    lblPirateName.Content = $"Namn: {pirateDetails.Name}";
+                    lblShip.Content = $"Skepp: {pirateDetails.ShipId}";
+                    //lblPirateCount.Content = $"Hur många pirater på skepp: {pirateDetails.PirateCount}";
+                    lblRank.Content = $"Rank: {pirateDetails.RankId}";
+                }
+                else
+                {
+                    MessageBox.Show("Ingen information kundes hittas");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ett fel inträffade: {ex.Message}");
+            }
         }
     }
 }

@@ -201,7 +201,37 @@ namespace Pirater.Repositories
         }
 
 
+        public async Task<Pirate> GetPirateDetailsByIdAsync(int pirateId)
+        {
+            string pirateDetails = "select p.id, p.name, p.rank_id, p.ship_id, r.name as rank_name, " +
+                         "s.name as ship_name" + "from pirate p " +
+                         "left join rank r on p.rank_id = r.id " +
+                         "left join ship s on p.ship_id = s.id ";
 
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new NpgsqlCommand(pirateDetails, connection))
+                {
+                    command.Parameters.AddWithValue("@PirateId", pirateId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new Pirate
+                            {
+                                Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
+                                Name = reader["name"].ToString(),
+                                RankId = (int)reader["rank_id"],
+                                ShipId = (int)reader["ship_id"],
+                            };
+                        }
+                    }
+                }
+            }
+            return null; // Om ingen pirat hittades
+        }
 
 
         public async Task<Pirate> SearchPirateAsync(string pirateName)
@@ -210,8 +240,8 @@ namespace Pirater.Repositories
 
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
-            using var command = new NpgsqlCommand("SELECT id, name, rank_id, ship_id FROM pirate", connection);
-            command.Parameters.AddWithValue("id", pirateName);
+            using var command = new NpgsqlCommand("select id, name, rank_id, ship_id from pirate where name = :pirate_name", connection);
+            command.Parameters.AddWithValue("pirate_name", pirateName);
             {
                 using (var reader = command.ExecuteReader())
                 {
@@ -229,7 +259,33 @@ namespace Pirater.Repositories
                 }
 
             }
-            return null;
+            return pirate;
+        }
+
+        public async Task<int> GetCrewCountByShipIdAsync(int shipId)
+        {
+            int crewCount = 0;
+
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                using var command = new NpgsqlCommand("select count(*) from pirate where ship_id = @ship_id", conn);
+                command.Parameters.AddWithValue("ship_id", shipId);
+
+                var result = await command.ExecuteScalarAsync();
+                if (result != null)
+                {
+                    crewCount = Convert.ToInt32(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid hämtning av besättningsantal: {ex.Message}");
+            }
+
+            return crewCount;
         }
 
     }
