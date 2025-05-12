@@ -142,15 +142,21 @@ namespace Pirater.Repositories
                 using var shipCommand = new NpgsqlCommand("SELECT ship_type_id FROM ship WHERE id = @ship_id", conn);
                 shipCommand.Parameters.AddWithValue("ship_id", shipId);
 
+                var shipTypeResult = await shipCommand.ExecuteScalarAsync();
+                if (shipTypeResult != null)
+                {
+                    shipTypeId = (int)shipTypeResult; 
+                }
+
                 int currentCrew = 0;
                 using var crewCommand = new NpgsqlCommand("SELECT id FROM pirate WHERE ship_id = @ship_id", conn);
                 crewCommand.Parameters.AddWithValue("ship_id", shipId);
 
 
-                // Hämtar piratare på skeppet
-                using (var reader = crewCommand.ExecuteReader())
+                // Hämtar pirater på skeppet
+                using (var crewReader = await crewCommand.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await crewReader.ReadAsync())
                     {
                         currentCrew++; // Öka currentCrew för varje pirat som hittas
                     }
@@ -185,7 +191,6 @@ namespace Pirater.Repositories
                 updateCommand.Parameters.AddWithValue("pirate_id", pirateId); // 
 
                 var result = await updateCommand.ExecuteNonQueryAsync();
-                MessageBox.Show("Piraten har blivit tilldelad ett skepp");
                 return true;
                 }
                 catch (Exception ex)

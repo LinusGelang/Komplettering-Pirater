@@ -66,6 +66,10 @@ namespace Pirater
                     await _dbRepo.RegNewPirate(pirate);
                     // Bekräftelse på att piraten har lagts till
                     MessageBox.Show($"Piraten {pirate.Name} har lagts till! Yaaar!");
+
+                    // https://stackoverflow.com/questions/27376887/wpf-updating-the-itemssource-in-a-listbox-with-an-async-method källa för att uppdatera listan när en pirat har skapats
+                    lstboxPirate.ItemsSource = await _dbRepo.GetAllPirates();
+
                 }
                 txtPirateName.Clear(); // Rensar Textboxen
                 // Källa på hur man återställer comboboxen
@@ -102,7 +106,7 @@ namespace Pirater
                 return;
             }
             // Kolla om piraten redan är kopplad till ett skepp
-            if (selectedPirate.ShipId != null)
+            if (selectedPirate.ShipId > 0)
             {
                 MessageBox.Show("Piraten är bemannad på ett annat skepp");
                 return;
