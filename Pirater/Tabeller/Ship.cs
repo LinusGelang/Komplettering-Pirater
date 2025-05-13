@@ -11,5 +11,7 @@ namespace Pirater.Tabeller
         public int Id {  get; set; }
         public string Name { get; set; }
         public int ShipTypeId { get; set; }
+
+        public bool IsSunk { get; set; } //Tillagd för att kunna visa om skeppet är sänkt eller inte
     }
 }

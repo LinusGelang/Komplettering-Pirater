@@ -112,7 +112,7 @@ namespace Pirater.Repositories
             await conn.OpenAsync();
 
             // Hämta skepp från databasen
-            using var command = new NpgsqlCommand("SELECT id, name, ship_type_id FROM ship", conn);
+            using var command = new NpgsqlCommand("SELECT id, name, ship_type_id, is_sunk FROM ship", conn);
 
             using (var reader = command.ExecuteReader())
             {
@@ -122,7 +122,8 @@ namespace Pirater.Repositories
                     {
                         Id = (int)reader["id"],
                         Name = (string)reader["name"].ToString(),
-                        ShipTypeId = (int)reader["ship_type_Id"]
+                        ShipTypeId = (int)reader["ship_type_id"],
+                        IsSunk = (bool)reader["is_sunk"] //Tillagd efter för att kunna få skeppet att visas som sänkt
                     };
                     ships.Add(ship);
                 }
@@ -283,6 +284,96 @@ namespace Pirater.Repositories
             }
 
             return crewCount;
+        }
+
+        public async Task markShipAsSunk(int shipId)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                // Update ship status to sunk
+                using var command = new NpgsqlCommand("UPDATE ship SET is_sunk = true WHERE id = @ship_id", conn);
+                command.Parameters.AddWithValue("ship_id", shipId);
+
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid sänkning av skepp: {ex.Message}");
+            }
+        }
+
+        public async Task<List<Pirate>> GetPiratesByShipId(int shipId)
+        {
+            List<Pirate> pirates = new List<Pirate>();
+
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                using var command = new NpgsqlCommand("SELECT id, name, rank_id FROM pirate WHERE ship_id = @ship_id", conn);
+                command.Parameters.AddWithValue("ship_id", shipId);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Pirate pirate = new Pirate()
+                        {
+                            Id = (int)reader["id"],
+                            Name = reader["name"].ToString(),
+                            RankId = (int)reader["rank_id"],
+                            ShipId = shipId
+                        };
+                        pirates.Add(pirate);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid hämtning av pirater: {ex.Message}");
+            }
+
+            return pirates;
+        }
+
+        public async Task deletePirate(int pirateId)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                using var command = new NpgsqlCommand("DELETE FROM pirate WHERE id = @pirate_id", conn);
+                command.Parameters.AddWithValue("pirate_id", pirateId);
+
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid borttagning av pirat: {ex.Message}");
+            }
+        }
+
+        public async Task removePirateFromShip(int pirateId)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                using var command = new NpgsqlCommand("UPDATE pirate SET ship_id = NULL WHERE id = @pirate_id", conn);
+                command.Parameters.AddWithValue("pirate_id", pirateId);
+
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid avlägsnande av pirat från skepp: {ex.Message}");
+            }
         }
 
     }

@@ -20,7 +20,7 @@
 
         <Button x:Name="btnSearchPirate" Content="Sök Pirat/Papegoja" HorizontalAlignment="Left" Margin="75,111,0,0" VerticalAlignment="Top" Width="120" Click="btnSearchPirate_Click" />
 
-        <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="597,116,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="597,116,0,0" VerticalAlignment="Top" Width="120" Click="btnSinkShip_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="219,37,0,0" TextWrapping="Wrap" Text="Ranks" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="602,39,0,0" TextWrapping="Wrap" Text="Skepp" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,168,0,0" TextWrapping="Wrap" Text="Lista pirater" VerticalAlignment="Top"/>
