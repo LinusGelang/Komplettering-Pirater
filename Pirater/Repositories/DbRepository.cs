@@ -203,10 +203,7 @@ namespace Pirater.Repositories
 
         public async Task<Pirate> GetPirateDetailsByIdAsync(int pirateId)
         {
-            string pirateDetails = "select p.id, p.name, p.rank_id, p.ship_id, r.name as rank_name, " +
-                         "s.name as ship_name" + "from pirate p " +
-                         "left join rank r on p.rank_id = r.id " +
-                         "left join ship s on p.ship_id = s.id ";
+            string pirateDetails = ("select p.id, p.name, p.rank_id, p.ship_id, r.name as rank_name, s.name as ship_name from pirate p left join rank r on p.rank_id = r.id left join ship s on p.ship_id = p.id");
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {

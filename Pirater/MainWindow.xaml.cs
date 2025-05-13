@@ -136,7 +136,13 @@ namespace Pirater
             {
                 string searchPirateName = txtPirateName.Text;
                 //string searchParrotName = txtPirateName.Text;
-                
+
+                if (int.TryParse(searchPirateName, out int pirateId)) //https://stackoverflow.com/questions/45642091/int-tryparse-passing-only-boolean-value-to-database Dock använde vi inte Boolean här
+                {
+                    MessageBox.Show("Ange ett giltigt pirat-ID.");
+                    return;
+                }
+
                 // Rensar listan vid en ny sökning
                 lstSearchPirates.ItemsSource = null;
 
