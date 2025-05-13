@@ -226,6 +226,7 @@ namespace Pirater
                 // Create a random number generator
                 Random random = new Random();
                 int survivorCount = 0;
+                
 
                 // Lista för att hålla koll på vilka pirater som dog
                 List<string> deadPirates = new List<string>();
@@ -244,6 +245,7 @@ namespace Pirater
                     else
                     {
                         //Om piraten dör så raderas den. 4ever-ever. Instängda i Davy Jones-kista. RIP
+                        deadPirates.Add(pirate.Name);
                         await _dbRepo.DeletePirate(pirate.Id);
                     }
                 }
@@ -251,10 +253,25 @@ namespace Pirater
                 //Hänvisar till metoden för att markera ett skepp som sänkt i vår databas
                 await _dbRepo.MarkShipAsSunk(selectedShip.Id);
 
-                string deadPiratesNames = deadPirates.Count > 0
-            ? string.Join(", ", deadPirates)
-            : "Inga";
+                string deadPiratesNames = "";
+                bool isFirst = true; // kollar om det är första namnet i listan
+                
+                foreach (var pirate in deadPirates)
+                {
+                    if (!isFirst)
+                    {
+                        deadPiratesNames += ", "; // om det är fler än en
+                    }
 
+                    deadPiratesNames += pirate; // lägger till pirat namnet
+                    isFirst = false;
+                }
+                // kollar om listan är tom
+                if (deadPiratesNames == "")
+                {
+                    deadPiratesNames = "Inga";
+                }
+                
                 //En liten messagebox som bekräftar att skeppet sjunkit och hur många som överlevde.
                 MessageBox.Show($"Skeppet {selectedShip.Name} har sjunkit! " +
                      $"{survivorCount} av {shipCrew.Count} pirater överlevde katastrofen.\n\n" +

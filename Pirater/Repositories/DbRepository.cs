@@ -326,7 +326,7 @@ namespace Pirater.Repositories
                             Id = (int)reader["id"],
                             Name = reader["name"].ToString(),
                             RankId = (int)reader["rank_id"],
-                            ShipId = (int)shipId
+                            ShipId = shipId
                         };
                         pirates.Add(pirate);
                     }
@@ -375,6 +375,8 @@ namespace Pirater.Repositories
                 MessageBox.Show($"Fel vid avlägsnande av pirat från skepp: {ex.Message}");
             }
         }
+
+        //public async Task PiratesAfterSunkenShip()
 
     }
 }
