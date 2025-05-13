@@ -140,7 +140,7 @@ namespace Pirater.Repositories
 
                 // Hämta skepps typ för att kolla besättning
                 int shipTypeId = 0;
-                using var shipCommand = new NpgsqlCommand("SELECT ship_type_id FROM ship WHERE id = @ship_id", conn);
+                using var shipCommand = new NpgsqlCommand("SELECT ship_type_id FROM ship WHERE id = @ship_id", conn); //sätter @ship_id då in-värdet kan variera Föreläsning 9 kring 49:45
                 shipCommand.Parameters.AddWithValue("ship_id", shipId);
 
                 var shipTypeResult = await shipCommand.ExecuteScalarAsync();
@@ -269,7 +269,7 @@ namespace Pirater.Repositories
                 using var conn = new NpgsqlConnection(_connectionString);
                 await conn.OpenAsync();
 
-                using var command = new NpgsqlCommand("SELECT COUNT(*) FROM pirate WHERE ship_id = @ship_id", conn);
+                using var command = new NpgsqlCommand("SELECT COUNT(*) FROM pirate WHERE ship_id = @ship_id", conn); //count(*) räknar antalet rader i en tabell https://www.w3schools.com/sql/sql_count.asp
                 command.Parameters.AddWithValue("ship_id", shipId);
 
                 var result = await command.ExecuteScalarAsync();
@@ -294,7 +294,7 @@ namespace Pirater.Repositories
                 await conn.OpenAsync();
 
                 // Update ship status to sunk
-                using var command = new NpgsqlCommand("UPDATE ship SET is_sunk = true WHERE id = @ship_id", conn);
+                using var command = new NpgsqlCommand("UPDATE ship SET is_sunk = true WHERE id = @ship_id", conn); //Uppdaterar tabllen https://www.w3schools.com/sql/sql_ref_update.asp
                 command.Parameters.AddWithValue("ship_id", shipId);
 
                 await command.ExecuteNonQueryAsync();

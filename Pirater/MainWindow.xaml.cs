@@ -65,7 +65,7 @@ namespace Pirater
                     // Lägg till i databasen
                     await _dbRepo.RegNewPirate(pirate);
                     // Bekräftelse på att piraten har lagts till
-                    MessageBox.Show($"Piraten {pirate.Name} har lagts till! Yaaar!");
+                    MessageBox.Show($"Piraten {pirate.Name} har lagts till! Yaaarr!");
 
                     // https://stackoverflow.com/questions/27376887/wpf-updating-the-itemssource-in-a-listbox-with-an-async-method källa för att uppdatera listan när en pirat har skapats
                     lstboxPirate.ItemsSource = await _dbRepo.GetAllPirates();
@@ -266,7 +266,7 @@ namespace Pirater
                     deadPiratesNames += pirate; // lägger till pirat namnet
                     isFirst = false;
                 }
-                // kollar om listan är tom
+                // kollar om listan med döda pirater är tom
                 if (deadPiratesNames == "")
                 {
                     deadPiratesNames = "Inga";
@@ -274,8 +274,8 @@ namespace Pirater
                 
                 //En liten messagebox som bekräftar att skeppet sjunkit och hur många som överlevde.
                 MessageBox.Show($"Skeppet {selectedShip.Name} har sjunkit! " +
-                     $"{survivorCount} av {shipCrew.Count} pirater överlevde katastrofen.\n\n" +
-                     $"Döda pirater: {deadPiratesNames}");
+                     $"{survivorCount} av {shipCrew.Count} pirater överlevde katastrofen.\n\n" + //Två st \n gör att det blir en tom rad till namnen på de döda piraterna
+                     $"Döda pirater: {deadPiratesNames}. RIP!" );
 
                 //Uppdaterar listboxen så man kan se vilka pirater som fortfarande lever
                 lstboxPirate.ItemsSource = await _dbRepo.GetAllPirates();
