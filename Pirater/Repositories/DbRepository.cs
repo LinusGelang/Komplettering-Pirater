@@ -275,7 +275,7 @@ namespace Pirater.Repositories
                 var result = await command.ExecuteScalarAsync();
                 if (result != null)
                 {
-                    crewCount = Convert.ToInt32(result);
+                    crewCount = (int)result;
                 }
             }
             catch (Exception ex)
@@ -286,7 +286,7 @@ namespace Pirater.Repositories
             return crewCount;
         }
 
-        public async Task markShipAsSunk(int shipId)
+        public async Task MarkShipAsSunk(int shipId)
         {
             try
             {
@@ -326,7 +326,7 @@ namespace Pirater.Repositories
                             Id = (int)reader["id"],
                             Name = reader["name"].ToString(),
                             RankId = (int)reader["rank_id"],
-                            ShipId = shipId
+                            ShipId = (int)shipId
                         };
                         pirates.Add(pirate);
                     }
@@ -340,7 +340,7 @@ namespace Pirater.Repositories
             return pirates;
         }
 
-        public async Task deletePirate(int pirateId)
+        public async Task DeletePirate(int pirateId)
         {
             try
             {
@@ -358,7 +358,7 @@ namespace Pirater.Repositories
             }
         }
 
-        public async Task removePirateFromShip(int pirateId)
+        public async Task RemovePirateFromShip(int pirateId)
         {
             try
             {

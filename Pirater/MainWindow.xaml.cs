@@ -227,6 +227,9 @@ namespace Pirater
                 Random random = new Random();
                 int survivorCount = 0;
 
+                // Lista för att hålla koll på vilka pirater som dog
+                List<string> deadPirates = new List<string>();
+
                 // Piraterna ges en 50% chans att överleva
                 foreach (var pirate in shipCrew)
                 {
@@ -235,22 +238,27 @@ namespace Pirater
                     if (survives)
                     {
                         //Plussar på de överlevande piraterna
-                        await _dbRepo.removePirateFromShip(pirate.Id);
+                        await _dbRepo.RemovePirateFromShip(pirate.Id);
                         survivorCount++;
                     }
                     else
                     {
-                        //Om piraten dör så raderas den. 4ever-ever. Instängda i Davy Jones-kista
-                        await _dbRepo.deletePirate(pirate.Id);
+                        //Om piraten dör så raderas den. 4ever-ever. Instängda i Davy Jones-kista. RIP
+                        await _dbRepo.DeletePirate(pirate.Id);
                     }
                 }
 
                 //Hänvisar till metoden för att markera ett skepp som sänkt i vår databas
-                await _dbRepo.markShipAsSunk(selectedShip.Id);
+                await _dbRepo.MarkShipAsSunk(selectedShip.Id);
+
+                string deadPiratesNames = deadPirates.Count > 0
+            ? string.Join(", ", deadPirates)
+            : "Inga";
 
                 //En liten messagebox som bekräftar att skeppet sjunkit och hur många som överlevde.
                 MessageBox.Show($"Skeppet {selectedShip.Name} har sjunkit! " +
-                              $"{survivorCount} av {shipCrew.Count} pirater överlevde katastrofen.");
+                     $"{survivorCount} av {shipCrew.Count} pirater överlevde katastrofen.\n\n" +
+                     $"Döda pirater: {deadPiratesNames}");
 
                 //Uppdaterar listboxen så man kan se vilka pirater som fortfarande lever
                 lstboxPirate.ItemsSource = await _dbRepo.GetAllPirates();
@@ -258,6 +266,7 @@ namespace Pirater
                 //Uppdaterar skeppens combobox och ger en markering till vilka skepp som sjunkit då vi fortfarande vill kunna se dem.
                 List<Ship> ships = await _dbRepo.GetAllShips();
                 ComboBoxShips<Ship>(cboxShips, ships);
+                cboxShips.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
