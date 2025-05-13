@@ -275,7 +275,9 @@ namespace Pirater.Repositories
                 var result = await command.ExecuteScalarAsync();
                 if (result != null)
                 {
-                    crewCount = (int)result;
+                    crewCount = Convert.ToInt32(result); //VI hade ett konstigt felmeddelande med castingen mellan
+                                                         //system.int64 till system int32.vi googlade och hittade denna lösning
+                                                         //verkade vara ett problem med serial i databasen som krockade med en vanlig int i VS https://stackoverflow.com/questions/4947562/why-use-convert-toint32-over-casting
                 }
             }
             catch (Exception ex)
@@ -286,7 +288,7 @@ namespace Pirater.Repositories
             return crewCount;
         }
 
-        public async Task MarkShipAsSunk(int shipId)
+        public async Task MarkShipAsSunk(int shipId) //metod för att markera att skeppet är sänkt. Inte fullt fungerande då tanken var att comboboxen med skepp skulle visa vilket skepp som  var sänkt oich vilket som flöt
         {
             try
             {
@@ -305,7 +307,7 @@ namespace Pirater.Repositories
             }
         }
 
-        public async Task<List<Pirate>> GetPiratesByShipId(int shipId)
+        public async Task<List<Pirate>> GetPiratesByShipId(int shipId) //metod för att hämta pirater med ett skeppsid
         {
             List<Pirate> pirates = new List<Pirate>();
 
@@ -340,7 +342,7 @@ namespace Pirater.Repositories
             return pirates;
         }
 
-        public async Task DeletePirate(int pirateId)
+        public async Task DeletePirate(int pirateId) // metod för att ta bort pirater
         {
             try
             {
@@ -358,7 +360,7 @@ namespace Pirater.Repositories
             }
         }
 
-        public async Task RemovePirateFromShip(int pirateId)
+        public async Task RemovePirateFromShip(int pirateId) // metod för att ta bort pirater från skepp
         {
             try
             {
@@ -374,7 +376,7 @@ namespace Pirater.Repositories
             {
                 MessageBox.Show($"Fel vid avlägsnande av pirat från skepp: {ex.Message}");
             }
-        }
+        } 
 
         //public async Task PiratesAfterSunkenShip()
 

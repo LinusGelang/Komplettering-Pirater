@@ -12,19 +12,16 @@
         <Button x:Name="btnCreatePirate" Content="Skapa Pirat" HorizontalAlignment="Left" Margin="75,84,0,0" VerticalAlignment="Top" Width="120" Click="btnCreatePirate_Click"/>
         <ComboBox x:Name="cboxRanks" HorizontalAlignment="Left" Margin="219,58,0,0" VerticalAlignment="Top" Width="120"/>
 
-        <Label x:Name="labelShipName" Content="Namn:" HorizontalAlignment="Left" Margin="410,58,0,0" VerticalAlignment="Top" Height="30"/>
-        <TextBox x:Name="txtShipName" HorizontalAlignment="Left" Margin="460,62,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnSearchShip" Content="Sök Skepp" HorizontalAlignment="Left" Margin="460,85,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox x:Name="cboxShips" HorizontalAlignment="Left" Margin="597,60,0,0" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnRecruitPirate" Content="Bemanna Skepp" HorizontalAlignment="Left" Margin="527,250,0,0" VerticalAlignment="Top" Width="92" Click="btnRecruitPirate_Click" Height="49"/>
+        <ComboBox x:Name="cboxShips" HorizontalAlignment="Left" Margin="482,58,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnRecruitPirate" Content="Bemanna Skepp" HorizontalAlignment="Left" Margin="482,85,0,0" VerticalAlignment="Top" Width="120" Click="btnRecruitPirate_Click" Height="36"/>
 
         <Button x:Name="btnSearchPirate" Content="Sök Pirat/Papegoja" HorizontalAlignment="Left" Margin="75,111,0,0" VerticalAlignment="Top" Width="120" Click="btnSearchPirate_Click" />
 
-        <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="597,116,0,0" VerticalAlignment="Top" Width="120" Click="btnSinkShip_Click"/>
+        <Button x:Name="btnSinkShip" Content="Sänk Skepp" HorizontalAlignment="Left" Margin="482,189,0,0" VerticalAlignment="Top" Width="120" Click="btnSinkShip_Click" Height="50"/>
         <TextBlock HorizontalAlignment="Left" Margin="219,37,0,0" TextWrapping="Wrap" Text="Ranks" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="602,39,0,0" TextWrapping="Wrap" Text="Skepp" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="487,37,0,0" TextWrapping="Wrap" Text="Skepp" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,168,0,0" TextWrapping="Wrap" Text="Lista pirater" VerticalAlignment="Top"/>
-        <StackPanel Margin="235,224,280,35" RenderTransformOrigin="0.5,0.5">
+        <StackPanel Margin="235,245,280,14" RenderTransformOrigin="0.5,0.5">
             <StackPanel.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleY="1"/>
@@ -38,7 +35,7 @@
             <Label x:Name="lblRank" Content="Rank: "/>
         </StackPanel>
         <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,189,583,119"/>
-        <ListBox x:Name="lstSearchPirates" SelectionChanged="lstSearchPirates_SelectionChanged" Margin="235,168,382,203">
+        <ListBox x:Name="lstSearchPirates" SelectionChanged="lstSearchPirates_SelectionChanged" Margin="235,189,382,182">
         </ListBox>
 
     </Grid>

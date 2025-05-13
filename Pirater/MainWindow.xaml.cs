@@ -177,7 +177,7 @@ namespace Pirater
             }
         }
 
-        private async void lstSearchPirates_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lstSearchPirates_SelectionChanged(object sender, SelectionChangedEventArgs e) //metod för att lista upp datan kring piraten i olika laables
         {
             if (lstSearchPirates.SelectedItem == null)
                 return;
@@ -192,9 +192,9 @@ namespace Pirater
                 {
                     // Visa informationen i labels
                     lblPirateName.Content = $"Namn: {pirateDetails.Name}";
-                    lblShip.Content = $"Skepp: {pirateDetails.ShipId}";
-                    //lblPirateCount.Content = $"Hur många pirater på skepp: {pirateDetails.PirateCount}";
-                    lblRank.Content = $"Rank: {pirateDetails.RankId}";
+                    //lblShip.Content = $"Skepp: {pirateDetails.ShipId}";
+                    //lblPirateCount.Content = $"Hur många pirater på skepp: {pirateDetails.PirateCount}"; //Tidig del som skulle räkna antal pirater per båt
+                    //lblRank.Content = $"Rank: {pirateDetails.RankId}";
                 }
                 else
                 {
@@ -275,7 +275,7 @@ namespace Pirater
                 //En liten messagebox som bekräftar att skeppet sjunkit och hur många som överlevde.
                 MessageBox.Show($"Skeppet {selectedShip.Name} har sjunkit! " +
                      $"{survivorCount} av {shipCrew.Count} pirater överlevde katastrofen.\n\n" + //Två st \n gör att det blir en tom rad till namnen på de döda piraterna
-                     $"Döda pirater: {deadPiratesNames}. RIP!" );
+                     $"Döda pirater: {deadPiratesNames} " );
 
                 //Uppdaterar listboxen så man kan se vilka pirater som fortfarande lever
                 lstboxPirate.ItemsSource = await _dbRepo.GetAllPirates();
