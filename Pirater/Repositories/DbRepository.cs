@@ -61,7 +61,7 @@ namespace Pirater.Repositories
                 await conn.OpenAsync();
                 // Lägger till ny pirat
                 using var command = new NpgsqlCommand("INSERT INTO pirate(name, rank_id) " +
-                                                        "VALUES(@pirate_name,  @rank_id)", conn);
+                                                      "VALUES(@pirate_name, @rank_id)", conn);
                 // Parametrar för kommandot
                 command.Parameters.AddWithValue("pirate_name", pirate.Name); // Lägger till namn
                 command.Parameters.AddWithValue("rank_id", pirate.RankId); // Lägger till id
@@ -201,29 +201,31 @@ namespace Pirater.Repositories
         }
 
 
-        public async Task<Pirate> GetPirateDetailsByIdAsync(int pirateId)
+        public async Task<Pirate> GetPirateDetailsByIdAsync(int pirateId) //Detaljhämtande funktion likt den vi hade i SkiDatabase
         {
-            string pirateDetails = ("select p.id, p.name, p.rank_id, p.ship_id, r.name as rank_name, s.name as ship_name from pirate p left join rank r on p.rank_id = r.id left join ship s on p.ship_id = p.id");
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using var connection = new NpgsqlConnection(_connectionString);
             {
                 await connection.OpenAsync();
-                using (var command = new NpgsqlCommand(pirateDetails, connection))
-                {
-                    command.Parameters.AddWithValue("@PirateId", pirateId);
+                using var command = new NpgsqlCommand("SELECT p.id, p.name, p.rank_id, p.ship_id, r.name AS rank_name, s.name AS ship_name " +
+                                                        "FROM pirate p " +
+                                                        "LEFT JOIN rank r ON p.rank_id = r.id " +
+                                                        "LEFT JOIN ship s ON p.ship_id = s.id " +
+                                                        "WHERE p.id = @pirate_id", connection);
+                
+                command.Parameters.AddWithValue("pirate_id", pirateId);
 
-                    using (var reader = await command.ExecuteReaderAsync())
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
                     {
-                        if (await reader.ReadAsync())
+                        return new Pirate
                         {
-                            return new Pirate
-                            {
-                                Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
-                                Name = reader["name"].ToString(),
-                                RankId = (int)reader["rank_id"],
-                                ShipId = (int)reader["ship_id"],
-                            };
-                        }
+                            Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
+                            Name = reader["name"].ToString(),
+                            RankId = (int)reader["rank_id"],
+                            ShipId = (int)reader["ship_id"],
+                        };
                     }
                 }
             }
@@ -237,7 +239,7 @@ namespace Pirater.Repositories
 
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
-            using var command = new NpgsqlCommand("select id, name, rank_id, ship_id from pirate where name = :pirate_name", connection);
+            using var command = new NpgsqlCommand("SELECT id, name, rank_id, ship_id FROM pirate WHERE name = @pirate_name", connection);
             command.Parameters.AddWithValue("pirate_name", pirateName);
             {
                 using (var reader = command.ExecuteReader())
@@ -251,10 +253,8 @@ namespace Pirater.Repositories
                             RankId = (int)reader["rank_id"],
                             ShipId = (int)reader["ship_id"],
                         };
-
                     }
                 }
-
             }
             return pirate;
         }
@@ -268,7 +268,7 @@ namespace Pirater.Repositories
                 using var conn = new NpgsqlConnection(_connectionString);
                 await conn.OpenAsync();
 
-                using var command = new NpgsqlCommand("select count(*) from pirate where ship_id = @ship_id", conn);
+                using var command = new NpgsqlCommand("SELECT COUNT(*) FROM pirate WHERE ship_id = @ship_id", conn);
                 command.Parameters.AddWithValue("ship_id", shipId);
 
                 var result = await command.ExecuteScalarAsync();

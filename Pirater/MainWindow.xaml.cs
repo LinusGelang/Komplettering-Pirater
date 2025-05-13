@@ -156,7 +156,6 @@ namespace Pirater
                     int crewCount = await _dbRepo.GetCrewCountByShipIdAsync(pirateDetails.ShipId);
 
                     // Visa piratens information i labels
-                    lblPirateName.Content = $"Namn: {pirateDetails.Name}";
                     lblShip.Content = $"Skepp: {pirateDetails.ShipId}";
                     lblPirateCount.Content = $"Antal pirater på skeppet: {crewCount}";
                     lblRank.Content = $"Rank: {pirateDetails.RankId}";
@@ -178,7 +177,7 @@ namespace Pirater
             }
         }
 
-        private async void lstSearchSkiers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lstSearchPirates_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lstSearchPirates.SelectedItem == null)
                 return;
