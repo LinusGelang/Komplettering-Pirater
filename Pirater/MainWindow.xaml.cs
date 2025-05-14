@@ -220,10 +220,9 @@ namespace Pirater
             
             try
             {
-                // Get all pirates on the ship
                 List<Pirate> shipCrew = await _dbRepo.GetPiratesByShipId(selectedShip.Id);
 
-                // Create a random number generator
+                // Skapar en slumpmäsig överlevnadschans för piraterna
                 Random random = new Random();
                 int survivorCount = 0;
                 
