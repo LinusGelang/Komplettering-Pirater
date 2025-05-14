@@ -222,7 +222,7 @@ namespace Pirater
             {
                 List<Pirate> shipCrew = await _dbRepo.GetPiratesByShipId(selectedShip.Id);
 
-                // Skapar en slumpmäsig överlevnadschans för piraterna
+                // Skapar en slumpmäsig överlevnadschans för piraterna //https://www.tutorialsteacher.com/articles/generate-random-numbers-in-csharp
                 Random random = new Random();
                 int survivorCount = 0;
                 
