@@ -1,4 +1,5 @@
-﻿using Pirater.Repositories;
+﻿using Npgsql;
+using Pirater.Repositories;
 using Pirater.Tabeller;
 using System.Text;
 using System.Threading.Tasks;
@@ -155,10 +156,25 @@ namespace Pirater
                     var pirateDetails = await _dbRepo.GetPirateDetailsByIdAsync(pirate.Id);
                     int crewCount = await _dbRepo.GetCrewCountByShipIdAsync(pirateDetails.ShipId);
 
+                    // Hämta skeppets namn från databasen
+                    string shipName = "Inte bemannad";
+                    if (pirateDetails.ShipId > 0)
+                    {
+                        // Hämta skeppnamn via repository
+                        shipName = await _dbRepo.GetShipNameById(pirateDetails.ShipId);
+                    }
+
+                    string rankName = "Ingen rank"; //Skapar en variabel som kallar på metoden som använder rank-id men returnerar rank-namnet.
+                    if (pirateDetails.RankId > -1) //Eftersom att Orankad börjar på noll så satte jag ranked behöver vara mer än -1
+                    {
+                        // Hämta ranknamn via repository, kopierad från koden ovan
+                        rankName = await _dbRepo.GetRankNameById(pirateDetails.RankId);
+                    }
+
                     // Visa piratens information i labels
-                    lblShip.Content = $"Skepp: {pirateDetails.ShipId}";
+                    lblShip.Content = $"Skepp: {shipName}"; //Ändrade från pirateDetails.ShipId till shipName så visas skeppets namn i lblShip
                     lblPirateCount.Content = $"Antal pirater på skeppet: {crewCount}";
-                    lblRank.Content = $"Rank: {pirateDetails.RankId}";
+                    lblRank.Content = $"Rank: {rankName}"; //Samma som med skepp två rader upp så ändrade jag det till en string variabel
 
                     // Lägg till piraten i listan för visning
                     List<Pirate> pirateList = new List<Pirate> { pirate };

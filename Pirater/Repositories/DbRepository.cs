@@ -376,7 +376,41 @@ namespace Pirater.Repositories
             {
                 MessageBox.Show($"Fel vid avlägsnande av pirat från skepp: {ex.Message}");
             }
-        } 
+        }
+
+        public async Task<string> GetShipNameById(int shipId) // metod för att också hämta skeppets namn från databasen. 
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+                using var command = new NpgsqlCommand("SELECT name FROM ship WHERE id = @ship_id", conn);
+                command.Parameters.AddWithValue("ship_id", shipId);
+                var result = await command.ExecuteScalarAsync();
+                return result != null ? result.ToString() : "Okänt skepp";
+            }
+            catch (Exception ex)
+            {
+                return "Fel vid hämtning av skeppsnamn";
+            }
+        }
+
+        public async Task<string> GetRankNameById(int rankId)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString); //copy-paste jag gjorde från getshipnamebyid ovan för att hämta rank-namnet i databasen
+                await conn.OpenAsync();
+                using var command = new NpgsqlCommand("SELECT name FROM rank WHERE id = @rank_id", conn);
+                command.Parameters.AddWithValue("rank_id", rankId);
+                var result = await command.ExecuteScalarAsync();
+                return result != null ? result.ToString() : "Okänd rank";
+            }
+            catch (Exception ex)
+            {
+                return "Fel vid hämtning av rank";
+            }
+        }
 
         //public async Task PiratesAfterSunkenShip()
 
