@@ -154,7 +154,9 @@ namespace Pirater
                 {
                     // Hämta detaljer om piratens skepp och antal besättningsmedlemmar
                     var pirateDetails = await _dbRepo.GetPirateDetailsByIdAsync(pirate.Id);
-                    int crewCount = await _dbRepo.GetCrewCountByShipIdAsync(pirateDetails.ShipId);
+                    //int crewCount = await _dbRepo.GetCrewCountByShipIdAsync(pirateDetails.ShipId);
+                    int currentCrewCount = await _dbRepo.CountCurrentCrewAsync(pirateDetails.ShipId);
+                    int maxCrewSize = await _dbRepo.GetCrewMaxSizeAsync(pirateDetails.ShipId);
 
                     // Hämta skeppets namn från databasen
                     string shipName = "Inte bemannad";
@@ -173,7 +175,7 @@ namespace Pirater
 
                     // Visa piratens information i labels
                     lblShip.Content = $"Skepp: {shipName}"; //Ändrade från pirateDetails.ShipId till shipName så visas skeppets namn i lblShip
-                    lblPirateCount.Content = $"Antal pirater på skeppet: {crewCount}";
+                    lblPirateCount.Content = $"Antal pirater på skeppet: {currentCrewCount} / {maxCrewSize} av maxbesättning";
                     lblRank.Content = $"Rank: {rankName}"; //Samma som med skepp två rader upp så ändrade jag det till en string variabel
 
                     // Lägg till piraten i listan för visning

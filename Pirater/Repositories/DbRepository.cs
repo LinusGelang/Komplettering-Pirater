@@ -137,51 +137,11 @@ namespace Pirater.Repositories
             {
                 using var conn = new NpgsqlConnection(_connectionString);
                 await conn.OpenAsync();
+                int crewLimit = await GetCrewMaxSizeAsync(shipId);
 
-                // Hämta skepps typ för att kolla besättning
-                int shipTypeId = 0;
-                using var shipCommand = new NpgsqlCommand("SELECT ship_type_id FROM ship WHERE id = @ship_id", conn); //sätter @ship_id då in-värdet kan variera Föreläsning 9 kring 49:45
-                shipCommand.Parameters.AddWithValue("ship_id", shipId);
+                int currentCrewCount = await CountCurrentCrewAsync(shipId);
 
-                var shipTypeResult = await shipCommand.ExecuteScalarAsync();
-                if (shipTypeResult != null)
-                {
-                    shipTypeId = (int)shipTypeResult; 
-                }
-
-                int currentCrew = 0;
-                using var crewCommand = new NpgsqlCommand("SELECT id FROM pirate WHERE ship_id = @ship_id", conn);
-                crewCommand.Parameters.AddWithValue("ship_id", shipId);
-
-
-                // Hämtar pirater på skeppet
-                using (var crewReader = await crewCommand.ExecuteReaderAsync())
-                {
-                    while (await crewReader.ReadAsync())
-                    {
-                        currentCrew++; // Öka currentCrew för varje pirat som hittas
-                    }
-                }
-
-                int maxCrew = 0;
-                if (shipTypeId == 1)
-                {
-                    maxCrew = 2;
-                }
-                else if (shipTypeId == 2)
-                {
-                    maxCrew = 3;
-                }
-                else if(shipTypeId == 3)
-                {
-                    maxCrew = 4;
-                }
-                else
-                {
-                    maxCrew = 0;
-                }
-
-                if (currentCrew >= maxCrew)
+                if (currentCrewCount >= crewLimit)
                 {
                     MessageBox.Show("Skeppet har inte plats för fler pirater");
                     return false;
@@ -193,14 +153,46 @@ namespace Pirater.Repositories
 
                 var result = await updateCommand.ExecuteNonQueryAsync();
                 return true;
-                }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
                 {
                     MessageBox.Show($"Något blev fel: {ex.Message}");
                     return false;
                 }
         }
 
+        public async Task<int> GetCrewMaxSizeAsync(int shipId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            int crewLimit = 0;
+            using var shipCommand = new NpgsqlCommand("SELECT crew_size FROM ship s JOIN ship_type st ON st.id = s.ship_type_id WHERE s.id = @ship_id", conn); //sätter @ship_id då in-värdet kan variera Föreläsning 9 kring 49:45
+            shipCommand.Parameters.AddWithValue("ship_id", shipId);
+
+            var maxCrewSize = await shipCommand.ExecuteScalarAsync();
+            if (maxCrewSize != null)
+            {
+                crewLimit = (int)maxCrewSize;
+            }
+
+            return crewLimit;
+        }
+
+        public async Task<int> CountCurrentCrewAsync(int shipId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+            //int currentCrew = 0;
+            using var crewCommand = new NpgsqlCommand("SELECT COUNT(*) ::int FROM pirate WHERE ship_id = @ship_id", conn);
+            crewCommand.Parameters.AddWithValue("ship_id", shipId);
+
+
+            // Hämtar pirater på skeppet
+            var currentCrewCount = (int)await crewCommand.ExecuteScalarAsync();
+           
+            return currentCrewCount;
+        }
 
         public async Task<Pirate> GetPirateDetailsByIdAsync(int pirateId) //Detaljhämtande funktion likt den vi hade i SkiDatabase
         {
@@ -384,10 +376,12 @@ namespace Pirater.Repositories
             {
                 using var conn = new NpgsqlConnection(_connectionString);
                 await conn.OpenAsync();
+
                 using var command = new NpgsqlCommand("SELECT name FROM ship WHERE id = @ship_id", conn);
                 command.Parameters.AddWithValue("ship_id", shipId);
-                var result = await command.ExecuteScalarAsync();
-                return result != null ? result.ToString() : "Okänt skepp";
+                
+                var answerShip = await command.ExecuteScalarAsync();
+                return answerShip != null ? answerShip.ToString() : "Okänt skepp";
             }
             catch (Exception ex)
             {
@@ -401,10 +395,12 @@ namespace Pirater.Repositories
             {
                 using var conn = new NpgsqlConnection(_connectionString); //copy-paste jag gjorde från getshipnamebyid ovan för att hämta rank-namnet i databasen
                 await conn.OpenAsync();
+
                 using var command = new NpgsqlCommand("SELECT name FROM rank WHERE id = @rank_id", conn);
                 command.Parameters.AddWithValue("rank_id", rankId);
-                var result = await command.ExecuteScalarAsync();
-                return result != null ? result.ToString() : "Okänd rank";
+
+                var answerRank = await command.ExecuteScalarAsync();
+                return answerRank != null ? answerRank.ToString() : "Okänd rank";
             }
             catch (Exception ex)
             {
