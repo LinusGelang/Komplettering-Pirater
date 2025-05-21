@@ -129,18 +129,16 @@ namespace Pirater
            
         }
 
-
-
         public async void btnSearchPirate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 string searchPirateName = txtPirateName.Text;
-                //string searchParrotName = txtPirateName.Text;
+                string searchParrotName = txtPirateName.Text;
 
                 if (int.TryParse(searchPirateName, out int pirateId)) //https://stackoverflow.com/questions/45642091/int-tryparse-passing-only-boolean-value-to-database Dock använde vi inte Boolean här
                 {
-                    MessageBox.Show("Ange ett giltigt pirat-ID.");
+                    MessageBox.Show("Ange ett giltigt pirat namn");
                     return;
                 }
 
@@ -225,7 +223,7 @@ namespace Pirater
             }
         }
 
-        private async void btnSinkShip_Click(object sender, RoutedEventArgs e)
+        private async void btnSinkShip_Click(object sender, RoutedEventArgs e) 
         {
             // Kräver att ett skepp är valt i rullistanb
             var selectedShip = (Ship)cboxShips.SelectedItem;

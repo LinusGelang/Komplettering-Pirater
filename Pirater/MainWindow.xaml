@@ -34,8 +34,8 @@
             <Label x:Name="lblPirateCount" Content="Hur många pirater på skepp: "/>
             <Label x:Name="lblRank" Content="Rank: "/>
         </StackPanel>
-        <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,189,583,119"/>
-        <ListBox x:Name="lstSearchPirates" SelectionChanged="lstSearchPirates_SelectionChanged" Margin="235,189,382,182">
+        <ListBox x:Name="lstboxPirate" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,189,570,119"/>
+        <ListBox x:Name="lstSearchPirates" SelectionChanged="lstSearchPirates_SelectionChanged" Margin="235,189,355,182">
         </ListBox>
 
     </Grid>

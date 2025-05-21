@@ -86,17 +86,31 @@ namespace Pirater.Repositories
             await conn.OpenAsync();
 
             // Hämta pirater från databasen
-            using var command = new NpgsqlCommand("SELECT id, name FROM pirate", conn);
+            using var command = new NpgsqlCommand("SELECT p.id, p.name,pa.name as parrot_name FROM pirate p " +
+                                                  "LEFT JOIN parrot pa ON pa.pirate_id = p.id", conn);
 
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    Pirate pirate = new Pirate()
+                    string details;
+                    // https://stackoverflow.com/questions/9801649/inserting-null-to-sql-db-from-c-sharp-dbcommand om det är null i databasen 
+                    if (reader["parrot_name"] == DBNull.Value)
                     {
-                        Id = (int)reader["id"],
-                        Name = (string)reader["name"].ToString()
-                    };
+                        details = (string)reader["name"].ToString();
+                    }
+                    else
+                    {
+                        details = (string)reader["name"].ToString() + " - " + (string)reader["parrot_name"].ToString();
+                    }
+
+
+                        Pirate pirate = new Pirate()
+                        {
+                            Id = (int)reader["id"],
+                            Name = details
+
+                        };
                     pirates.Add(pirate);
                 }
             }
@@ -232,17 +246,32 @@ namespace Pirater.Repositories
 
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
-            using var command = new NpgsqlCommand("SELECT id, name, rank_id, ship_id FROM pirate WHERE name = @pirate_name", connection);
+            // https://www.w3schools.com/mysql/mysql_like.asp fixat sökningen så man kan söka på pirat eller papegoja
+            using var command = new NpgsqlCommand("SELECT p.id, p.name, p.rank_id, p.ship_id, pa.name as parrot_name FROM pirate p " +
+                                                  "LEFT JOIN parrot pa ON pa.pirate_id = p.id " +
+                                                  "WHERE p.name LIKE @pirate_name OR pa.name LIKE @parrot_name", connection);
+
             command.Parameters.AddWithValue("pirate_name", pirateName);
+            command.Parameters.AddWithValue("parrot_name", pirateName);
+
             {
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
+                        string details;
+                        if (reader["parrot_name"] == DBNull.Value)
+                        {
+                            details = (string)reader["name"].ToString();
+                        }
+                        else
+                        {
+                            details = (string)reader["name"].ToString() + " - " + (string)reader["parrot_name"].ToString();
+                        }
                         pirate = new Pirate
                         {
                             Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
-                            Name = reader["name"].ToString(),
+                            Name = details,
                             RankId = (int)reader["rank_id"],
                             ShipId = (int)reader["ship_id"],
                         };
