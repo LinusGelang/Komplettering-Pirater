@@ -232,7 +232,6 @@ namespace Pirater
                 MessageBox.Show("Välj ett skepp att sänka");
                 return;
             }
-
             
             try
             {

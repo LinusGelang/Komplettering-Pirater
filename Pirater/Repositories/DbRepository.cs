@@ -86,8 +86,10 @@ namespace Pirater.Repositories
             await conn.OpenAsync();
 
             // Hämta pirater från databasen
-            using var command = new NpgsqlCommand("SELECT p.id, p.name, pa.id as parrot_id, pa.name as parrot_name FROM pirate p " +
-                                                  "LEFT JOIN parrot pa ON pa.pirate_id = p.id", conn);
+            using var command = new NpgsqlCommand("SELECT p.id, p.name, pa.id as parrot_id, pa.name as parrot_name " +
+                                                  "FROM pirate p " +
+                                                  "LEFT JOIN parrot pa ON pa.pirate_id = p.id " +
+                                                  "ORDER BY p.id", conn);
 
             using (var reader = command.ExecuteReader())
             {
@@ -382,10 +384,17 @@ namespace Pirater.Repositories
                 using var conn = new NpgsqlConnection(_connectionString);
                 await conn.OpenAsync();
 
-                using var command = new NpgsqlCommand("DELETE FROM pirate WHERE id = @pirate_id", conn);
-                command.Parameters.AddWithValue("pirate_id", pirateId);
+                using var deleteParrot = new NpgsqlCommand("DELETE FROM parrot WHERE pirate_id = @pirate_id", conn);
+                deleteParrot.Parameters.AddWithValue("pirate_id", pirateId);
+                await deleteParrot.ExecuteNonQueryAsync();
+    
+                using var deleteBounty = new NpgsqlCommand("DELETE FROM bounty WHERE pirate_id = @pirate_id", conn);
+                deleteBounty.Parameters.AddWithValue("pirate_id", pirateId);
+                await deleteBounty.ExecuteNonQueryAsync();
 
-                await command.ExecuteNonQueryAsync();
+                using var deletePirate = new NpgsqlCommand("DELETE FROM pirate WHERE id = @pirate_id", conn);
+                deletePirate.Parameters.AddWithValue("pirate_id", pirateId);
+                await deletePirate.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
