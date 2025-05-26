@@ -86,31 +86,32 @@ namespace Pirater.Repositories
             await conn.OpenAsync();
 
             // Hämta pirater från databasen
-            using var command = new NpgsqlCommand("SELECT p.id, p.name,pa.name as parrot_name FROM pirate p " +
+            using var command = new NpgsqlCommand("SELECT p.id, p.name, pa.id as parrot_id, pa.name as parrot_name FROM pirate p " +
                                                   "LEFT JOIN parrot pa ON pa.pirate_id = p.id", conn);
 
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
+                    Pirate pirate = new Pirate()
+                    {
+                        Id = (int)reader["id"],
+                        Name = reader["name"].ToString()
+                    };
+
                     string details;
                     // https://stackoverflow.com/questions/9801649/inserting-null-to-sql-db-from-c-sharp-dbcommand om det är null i databasen 
-                    if (reader["parrot_name"] == DBNull.Value)
+                    if (reader["parrot_name"] != DBNull.Value)
                     {
-                        details = (string)reader["name"].ToString();
-                    }
-                    else
-                    {
-                        details = (string)reader["name"].ToString() + " - " + (string)reader["parrot_name"].ToString();
-                    }
-
-
-                        Pirate pirate = new Pirate()
+                        Parrot parrot = new Parrot()
                         {
-                            Id = (int)reader["id"],
-                            Name = details
-
+                            Id = (int)reader["parrot_id"],
+                            PirateId = (int)reader["id"],
+                            Name = reader["parrot_name"].ToString()
                         };
+                        pirate.Parrots = new List<Parrot>() { parrot };
+                    }
+
                     pirates.Add(pirate);
                 }
             }
@@ -126,20 +127,31 @@ namespace Pirater.Repositories
             await conn.OpenAsync();
 
             // Hämta skepp från databasen
-            using var command = new NpgsqlCommand("SELECT id, name, ship_type_id, is_sunk FROM ship", conn);
+            using var command = new NpgsqlCommand("SELECT s.id, s.name, s.ship_type_id, s.is_sunk, st.crew_size, st.type as ship_type FROM ship s " +
+                                                  "LEFT JOIN ship_type st ON s.ship_type_id = st.id", conn);
+            // using var command = new NpgsqlCommand("SELECT id, name, ship_type_id, is_sunk FROM ship", conn);
 
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
+                    //string details = reader["name"].ToString() + " - " + reader["ship_type"].ToString();
                     Ship ship = new Ship()
                     {
                         Id = (int)reader["id"],
-                        Name = (string)reader["name"].ToString(),
-                        ShipTypeId = (int)reader["ship_type_id"],
+                        Name = reader["name"].ToString(),
+                        //ShipTypeId = (int)reader["ship_type_id"],
                         IsSunk = (bool)reader["is_sunk"] //Tillagd efter för att kunna få skeppet att visas som sänkt
                     };
+                    ShipType shipType = new ShipType()
+                    {
+                        Id = (int)reader["id"],
+                        Type = reader["ship_type"].ToString(),
+                        CrewSize = (int)reader["crew_size"]
+                    };
+                    ship.ShipType = shipType;
                     ships.Add(ship);
+                    
                 }
             }
             return ships;

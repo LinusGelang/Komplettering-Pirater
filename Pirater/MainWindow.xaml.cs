@@ -86,14 +86,14 @@ namespace Pirater
         private async void ListPirates<T>(ListBox lbp, List<T> list) // Visar piraterna i listbox
         {
             lbp.ItemsSource = list;
-            lbp.DisplayMemberPath = "Name";
+            lbp.DisplayMemberPath = "GetName";
             lbp.SelectedValuePath = "Id";
         }
 
         private async void ComboBoxShips<T>(ComboBox cbs, List<T> list) // Visar skeppen i Combobox
         {
             cbs.ItemsSource = list;
-            cbs.DisplayMemberPath = "Name";
+            cbs.DisplayMemberPath = "GetName";
             cbs.SelectedValuePath = "Id";
         }
 

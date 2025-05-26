@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Pirater.Tabeller
 {
@@ -10,5 +11,7 @@ namespace Pirater.Tabeller
     {
         public int Id {  get; set; }
         public string Type { get; set; }
+        public int CrewSize { get; set; }
+        
     }
 }
