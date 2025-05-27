@@ -15,7 +15,7 @@ namespace Pirater.Tabeller
 
         public int RankId { get; set; }
 
-        public int ShipId { get; set; }
+        public int? ShipId { get; set; }
 
         public List<Parrot> Parrots { get; set; }
 

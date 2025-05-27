@@ -21,6 +21,16 @@ namespace Pirater.Repositories
                              .Build();
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
+
+        private static T? ConvertFromDbVal<T>(object obj)
+        {
+            if (obj == null || obj == DBNull.Value)
+            {
+                return default;
+            }
+            return (T)obj;
+        }
+
         public async Task<List<Rank>> GetAllRanks() //Metod som hämtar alla ranks från databasen.
         {
             // Lista för att lagra alla ranker
@@ -245,14 +255,13 @@ namespace Pirater.Repositories
                             Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
                             Name = reader["name"].ToString(),
                             RankId = (int)reader["rank_id"],
-                            ShipId = (int)reader["ship_id"],
+                            ShipId = ConvertFromDbVal<int?>(reader["ship_id"])
                         };
                     }
                 }
             }
             return null; // Om ingen pirat hittades
         }
-
 
         public async Task<Pirate> SearchPirateAsync(string pirateName)
         {
@@ -287,7 +296,7 @@ namespace Pirater.Repositories
                             Id = (int)reader["id"], //Rätt format. Föreläsning 8 ca 50min in
                             Name = details,
                             RankId = (int)reader["rank_id"],
-                            ShipId = (int)reader["ship_id"],
+                            ShipId = ConvertFromDbVal<int?>(reader["ship_id"])
                         };
                     }
                 }
@@ -458,7 +467,6 @@ namespace Pirater.Repositories
             }
         }
 
-        //public async Task PiratesAfterSunkenShip()
 
     }
 }

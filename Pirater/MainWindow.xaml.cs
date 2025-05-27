@@ -40,6 +40,15 @@ namespace Pirater
             ComboBoxShips<Ship>(cboxShips, ships);
         }
 
+        private static T? ConvertFromDbVal<T>(object obj)
+        {
+            if (obj == null || obj == DBNull.Value)
+            {
+                return default;
+            }
+            return (T)obj;
+        }
+
         private async void ComboBoxPirateRank<T>(ComboBox cb, List<T> list) // Visar rankerna i combobox
         {
             // https://elearn20.miun.se/moodle/mod/kalvidres/view.php?id=1292192 källa på hur vi fyllde comboboxen
@@ -129,7 +138,7 @@ namespace Pirater
            
         }
 
-        public async void btnSearchPirate_Click(object sender, RoutedEventArgs e)
+        private async void btnSearchPirate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -153,15 +162,22 @@ namespace Pirater
                     // Hämta detaljer om piratens skepp och antal besättningsmedlemmar
                     var pirateDetails = await _dbRepo.GetPirateDetailsByIdAsync(pirate.Id);
                     //int crewCount = await _dbRepo.GetCrewCountByShipIdAsync(pirateDetails.ShipId);
-                    int currentCrewCount = await _dbRepo.CountCurrentCrewAsync(pirateDetails.ShipId);
-                    int maxCrewSize = await _dbRepo.GetCrewMaxSizeAsync(pirateDetails.ShipId);
+                    int currentCrewCount = 0;
+                    int maxCrewSize = 0;
+
+                    if (pirateDetails.ShipId != null)
+                    {
+                         currentCrewCount = await _dbRepo.CountCurrentCrewAsync((int)pirateDetails.ShipId);
+                         maxCrewSize = await _dbRepo.GetCrewMaxSizeAsync((int)pirateDetails.ShipId);
+
+                    }
 
                     // Hämta skeppets namn från databasen
                     string shipName = "Inte bemannad";
-                    if (pirateDetails.ShipId > 0)
+                    if (pirateDetails.ShipId != null && pirateDetails.ShipId > 0 )
                     {
                         // Hämta skeppnamn via repository
-                        shipName = await _dbRepo.GetShipNameById(pirateDetails.ShipId);
+                        shipName = await _dbRepo.GetShipNameById((int)pirateDetails.ShipId);
                     }
 
                     string rankName = "Ingen rank"; //Skapar en variabel som kallar på metoden som använder rank-id men returnerar rank-namnet.
@@ -172,14 +188,22 @@ namespace Pirater
                     }
 
                     // Visa piratens information i labels
-                    lblShip.Content = $"Skepp: {shipName}"; //Ändrade från pirateDetails.ShipId till shipName så visas skeppets namn i lblShip
-                    lblPirateCount.Content = $"Antal pirater på skeppet: {currentCrewCount} / {maxCrewSize} av maxbesättning";
+                    if (pirateDetails.ShipId != null && pirateDetails.ShipId > 0)
+                    {
+                        lblShip.Content = $"Skepp: {shipName}"; //Ändrade från pirateDetails.ShipId till shipName så visas skeppets namn i lblShip
+                        lblPirateCount.Content = $"Antal pirater på skeppet: {currentCrewCount} / {maxCrewSize} av maxbesättning";
+                    }
+                    else
+                    {
+                        lblShip.Content = "Skepp: Piraten är skeppslös";
+                        lblPirateCount.Content = $"Antal pirater på skeppet: - ";
+                    }
                     lblRank.Content = $"Rank: {rankName}"; //Samma som med skepp två rader upp så ändrade jag det till en string variabel
 
                     // Lägg till piraten i listan för visning
-                    List<Pirate> pirateList = new List<Pirate> { pirate };
+                    List<Pirate> pirateList = new List<Pirate> {pirate};
                     lstSearchPirates.ItemsSource = pirateList;
-                    lstSearchPirates.DisplayMemberPath = "Name";
+                    lstSearchPirates.DisplayMemberPath = "GetName";
                     lstSearchPirates.SelectedValuePath = "Id";
                 }
                 else
